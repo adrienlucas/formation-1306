@@ -1,9 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello MovieController!{% endblock %}
+{# {% block title %}Show movie - {{ parent() }}{% endblock %} #}
+
+{% block title 'Show movie - ' ~ parent() %}
 
 {% block body %}
-
-    {{ dump(movie) }}
-
+    {% dump(movie) %}
+    <h2>{{ movie.title }}</h2>
+    <p>{{ movie.description }}</p>
 {% endblock %}
