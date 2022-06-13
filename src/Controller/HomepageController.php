@@ -10,11 +10,12 @@ class HomepageController extends AbstractController
 {
     /**
      * @Route("/", name="app_homepage")
+     * @Route("/hello/{name}", name="app_hello")
      */
-    public function index(): Response
+    public function homepage(string $name = 'world'): Response
     {
         return $this->render('homepage/index.html.twig', [
-            'controller_name' => 'HomepageController',
+            'controller_name' => $name,
         ]);
     }
 }
