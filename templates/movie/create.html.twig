@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{# {% block title %}Show movie - {{ parent() }}{% endblock %} #}
+
+{% block title 'Create movie - ' ~ parent() %}
+
+{% block body %}
+
+    {{ form(movie_form) }}
+
+{% endblock %}

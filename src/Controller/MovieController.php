@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Genre;
 use App\Entity\Movie;
+use App\Form\MovieType;
 use App\Repository\GenreRepository;
 use App\Repository\MovieRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -28,12 +29,24 @@ class MovieController extends AbstractController
     }
 
     /**
-     * @Route("/movie/{id}", name="app_movie_show")
+     * @Route("/movie/{id}", name="app_movie_show", requirements={"id": "\d+"})
      */
     public function show(Movie $movie): Response
     {
         return $this->render('movie/show.html.twig', [
             'movie' => $movie,
+        ]);
+    }
+
+    /**
+     * @Route("/movie/create", name="app_movie_create")
+     */
+    public function create(): Response
+    {
+        $form = $this->createForm(MovieType::class);
+
+        return $this->render('movie/create.html.twig', [
+            'movie_form' => $form->createView()
         ]);
     }
 
