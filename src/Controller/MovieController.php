@@ -19,8 +19,6 @@ class MovieController extends AbstractController
      */
     public function list(ManagerRegistry $doctrine): Response
     {
-        //$doctrine = $this->getDoctrine();
-
         $movieRepository = $doctrine->getRepository(Movie::class);
         $movies = $movieRepository->findAll();
 
@@ -32,15 +30,8 @@ class MovieController extends AbstractController
     /**
      * @Route("/movie/{id}", name="app_movie_show")
      */
-    public function show(int $id, ManagerRegistry $doctrine): Response
+    public function show(Movie $movie): Response
     {
-        $movieRepository = $doctrine->getRepository(Movie::class);
-        $movie = $movieRepository->find($id);
-
-        if($movie === null) {
-            throw $this->createNotFoundException('Movie not found');
-        }
-
         return $this->render('movie/show.html.twig', [
             'movie' => $movie,
         ]);
