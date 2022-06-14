@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Genre;
 use App\Entity\Movie;
+use App\Repository\GenreRepository;
+use App\Repository\MovieRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,14 +15,31 @@ use Symfony\Component\Routing\Annotation\Route;
 class MovieController extends AbstractController
 {
     /**
-     * @Route("/movie", name="app_movie_show")
+     * @Route("/movies", name="app_movie_list")
      */
-    public function show(): Response
+    public function list(ManagerRegistry $doctrine): Response
     {
-        $movie = [
-            'title' => 'The Matrix',
-            'description' => 'Neo takes the red pill'
-        ];
+        //$doctrine = $this->getDoctrine();
+
+        $movieRepository = $doctrine->getRepository(Movie::class);
+        $movies = $movieRepository->findAll();
+
+        return $this->render('movie/list.html.twig', [
+            'movies' => $movies
+        ]);
+    }
+
+    /**
+     * @Route("/movie/{id}", name="app_movie_show")
+     */
+    public function show(int $id, ManagerRegistry $doctrine): Response
+    {
+        $movieRepository = $doctrine->getRepository(Movie::class);
+        $movie = $movieRepository->find($id);
+
+        if($movie === null) {
+            throw $this->createNotFoundException('Movie not found');
+        }
 
         return $this->render('movie/show.html.twig', [
             'movie' => $movie,
@@ -32,9 +51,11 @@ class MovieController extends AbstractController
      */
     public function loadMovies(ManagerRegistry $doctrine): Response
     {
+        /** @var MovieRepository $movieRepository */
         $movieRepository = $doctrine->getRepository(Movie::class);
         $movieRepository->removeAll();
 
+        /** @var GenreRepository $genreRepository */
         $genreRepository = $doctrine->getRepository(Genre::class);
         $genreRepository->removeAll();
 
