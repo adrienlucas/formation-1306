@@ -39,6 +39,11 @@ class GenreRepository extends ServiceEntityRepository
         }
     }
 
+    public function removeAll(): void
+    {
+        $query = $this->getEntityManager()->createQuery('DELETE FROM App\Entity\Genre');
+        $query->execute();
+    }
 //    /**
 //     * @return Genre[] Returns an array of Genre objects
 //     */

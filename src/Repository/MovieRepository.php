@@ -39,6 +39,12 @@ class MovieRepository extends ServiceEntityRepository
         }
     }
 
+    public function removeAll(): void
+    {
+        $query = $this->getEntityManager()->createQuery('DELETE FROM App\Entity\Movie');
+        $query->execute();
+    }
+
 //    /**
 //     * @return Movie[] Returns an array of Movie objects
 //     */
