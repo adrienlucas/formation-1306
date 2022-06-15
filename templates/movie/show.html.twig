@@ -6,6 +6,7 @@
 
 {% block body %}
     {% dump(movie) %}
+    <img src="{{ movie_poster }}" />
     <h2>{{ movie.title }}</h2>
     <p>{{ movie.description }}</p>
 {% endblock %}
