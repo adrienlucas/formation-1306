@@ -8,20 +8,22 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class OmdbGateway
 {
     private $httpClient;
-    private $apiKey = 'e0ded5e2';
+    private $omdbApiKey;
 
     public function __construct(
-        HttpClientInterface $httpClient
+        HttpClientInterface $httpClient,
+        string $omdbApiKey
     )
     {
         $this->httpClient = $httpClient;
+        $this->omdbApiKey = $omdbApiKey;
     }
 
     public function getPosterByMovieTitle(string $title): string
     {
         $url = sprintf(
             'https://www.omdbapi.com/?apikey=%s&t=%s',
-            $this->apiKey,
+            $this->omdbApiKey,
             $title
         );
 
