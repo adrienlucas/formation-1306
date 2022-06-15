@@ -4,15 +4,18 @@ namespace App\Controller;
 
 use App\Entity\Genre;
 use App\Entity\Movie;
+use App\Entity\User;
 use App\Form\MovieType;
 use App\Gateway\OmdbGateway;
 use App\Repository\GenreRepository;
 use App\Repository\MovieRepository;
+use App\Repository\UserRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class MovieController extends AbstractController
@@ -71,15 +74,25 @@ class MovieController extends AbstractController
     /**
      * @Route("/load-movies", name="app_movie_load")
      */
-    public function loadMovies(ManagerRegistry $doctrine): Response
+    public function loadMovies(ManagerRegistry $doctrine, UserPasswordHasherInterface $passwordHasher): Response
     {
         /** @var MovieRepository $movieRepository */
         $movieRepository = $doctrine->getRepository(Movie::class);
         $movieRepository->removeAll();
 
+        /** @var UserRepository $userRepository */
+        $userRepository = $doctrine->getRepository(User::class);
+//        $movieRepository->removeAll();
+
         /** @var GenreRepository $genreRepository */
         $genreRepository = $doctrine->getRepository(Genre::class);
         $genreRepository->removeAll();
+
+        $user = new User();
+        $user->setUsername('adrien');
+        $user->setPassword($passwordHasher->hashPassword($user, 'adrien'));
+
+        $userRepository->add($user, true);
 
         $movie = new Movie();
         $movie->setTitle('The Matrix');
