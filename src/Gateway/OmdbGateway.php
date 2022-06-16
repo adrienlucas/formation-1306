@@ -34,12 +34,6 @@ class OmdbGateway
 
         $response = $this->httpClient->request('GET', $url);
 
-        return
-            isset($response->toArray()['Poster'])
-            && $response->toArray()['Poster'] !== null
-            ? $response->toArray()['Poster'] : '';
-
-
         return $response->toArray()['Poster'] ?? '';
     }
 
