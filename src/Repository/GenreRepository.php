@@ -16,6 +16,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class GenreRepository extends ServiceEntityRepository
 {
+    use RemoveAllTrait;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Genre::class);
@@ -37,12 +39,6 @@ class GenreRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
-    }
-
-    public function removeAll(): void
-    {
-        $query = $this->getEntityManager()->createQuery('DELETE FROM App\Entity\Genre');
-        $query->execute();
     }
 //    /**
 //     * @return Genre[] Returns an array of Genre objects

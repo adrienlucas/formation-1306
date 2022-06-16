@@ -11,6 +11,7 @@ use App\Repository\GenreRepository;
 use App\Repository\MovieRepository;
 use App\Repository\UserRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -46,8 +47,32 @@ class MovieController extends AbstractController
         ]);
     }
 
+
+    /**
+     * @IsGranted("CAN_SHOW_FICHE", subject="agent")
+     */
+    public function ficheAgent(Agent $agent) {
+
+    }
+
+    /**
+     * @Route("/movie/{id}/delete")
+     * @IsGranted("ROLE_ADMIN", subject="movie")
+     *
+     * @IsGranted("CAN_DELETE", subject="movie")
+     */
+    public function delete(Movie $movie, MovieRepository $movieRepository): Response
+    {
+        $movieRepository->remove($movie, true);
+
+        $this->addFlash('success', 'The movie has been deleted.');
+
+        return $this->redirectToRoute('app_movie_list');
+    }
+
     /**
      * @Route("/movie/create", name="app_movie_create")
+     * @IsGranted("ROLE_ADMIN")
      */
     public function create(Request $request, ManagerRegistry $doctrine): Response
     {
@@ -56,6 +81,7 @@ class MovieController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid()) {
             $movie = $form->getData();
+            $movie->setCreator($this->getUser());
 
             /** @var MovieRepository $movieRepository */
             $movieRepository = $doctrine->getRepository(Movie::class);
@@ -82,7 +108,7 @@ class MovieController extends AbstractController
 
         /** @var UserRepository $userRepository */
         $userRepository = $doctrine->getRepository(User::class);
-//        $movieRepository->removeAll();
+        $userRepository->removeAll();
 
         /** @var GenreRepository $genreRepository */
         $genreRepository = $doctrine->getRepository(Genre::class);
@@ -93,6 +119,21 @@ class MovieController extends AbstractController
         $user->setPassword($passwordHasher->hashPassword($user, 'adrien'));
 
         $userRepository->add($user, true);
+
+        $user = new User();
+        $user->setUsername('admin');
+        $user->setPassword($passwordHasher->hashPassword($user, 'admin'));
+        $user->setRoles(['ROLE_ADMIN']);
+
+        $userRepository->add($user, true);
+
+        $user = new User();
+        $user->setUsername('john');
+        $user->setPassword($passwordHasher->hashPassword($user, 'john'));
+        $user->setRoles(['ROLE_ADMIN']);
+
+        $userRepository->add($user, true);
+
 
         $movie = new Movie();
         $movie->setTitle('The Matrix');

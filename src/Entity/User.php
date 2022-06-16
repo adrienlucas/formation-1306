@@ -35,6 +35,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $password;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Movie::class, mappedBy="creator")
+     */
+    private $movies;
+
+    public function getMovies()
+    {
+        return $this->movies;
+    }
+
+    public function setMovies($movies): void
+    {
+        $this->movies = $movies;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

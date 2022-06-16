@@ -11,4 +11,8 @@
             <li><a href="{{ path('app_movie_show', {'id': movie.id}) }}">{{ movie.title }}</a></li>
         {% endfor %}
     </ul>
+
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('app_movie_create') }}">Create a new movie</a>
+    {% endif %}
 {% endblock %}

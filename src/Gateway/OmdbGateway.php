@@ -4,19 +4,23 @@ declare(strict_types=1);
 namespace App\Gateway;
 
 use App\Entity\Movie;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class OmdbGateway
 {
     private $httpClient;
+    private $authorizationChecker;
     private $omdbApiKey;
 
     public function __construct(
         HttpClientInterface $httpClient,
+        AuthorizationCheckerInterface $authorizationChecker,
         string $omdbApiKey
     )
     {
         $this->httpClient = $httpClient;
+        $this->authorizationChecker = $authorizationChecker;
         $this->omdbApiKey = $omdbApiKey;
     }
 
@@ -30,7 +34,13 @@ class OmdbGateway
 
         $response = $this->httpClient->request('GET', $url);
 
-        return $response->toArray()['Poster'];
+        return
+            isset($response->toArray()['Poster'])
+            && $response->toArray()['Poster'] !== null
+            ? $response->toArray()['Poster'] : '';
+
+
+        return $response->toArray()['Poster'] ?? '';
     }
 
     public function getMovieByTitle(string $title): Movie

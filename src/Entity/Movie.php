@@ -35,6 +35,21 @@ class Movie
      */
     private $genre;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="movies")
+     */
+    private $creator;
+
+    public function getCreator()
+    {
+        return $this->creator;
+    }
+
+    public function setCreator($creator): void
+    {
+        $this->creator = $creator;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

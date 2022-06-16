@@ -16,6 +16,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class MovieRepository extends ServiceEntityRepository
 {
+    use RemoveAllTrait;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Movie::class);
@@ -37,12 +39,6 @@ class MovieRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
-    }
-
-    public function removeAll(): void
-    {
-        $query = $this->getEntityManager()->createQuery('DELETE FROM App\Entity\Movie');
-        $query->execute();
     }
 
     public function findLatest(): ?Movie
